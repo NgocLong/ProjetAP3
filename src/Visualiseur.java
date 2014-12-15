@@ -38,6 +38,7 @@ public class Visualiseur extends JFrame {
 	static BufferedImage m_img_src = new BufferedImage( 1000, 1000 , BufferedImage.TYPE_INT_ARGB);
 	static BufferedImage m_img = new BufferedImage( 1000, 1000 , BufferedImage.TYPE_INT_ARGB);
 	String url_src = new String();
+	JLabel l2;
 	
 	public Visualiseur() {
 	super();
@@ -58,21 +59,15 @@ public class Visualiseur extends JFrame {
 	int width = 0, height = 0;
 	try {
            test = ImageIO.read(new File(url));
-           img_src = ImageIO.read(new File(url));
-           //m_img = ImageIO.read(new File(url_src));
+           //img_src = ImageIO.read(new File(url));
+           m_img = ImageIO.read(new File(url_src));
            width = test.getWidth();
            height = test.getHeight();
        } catch (IOException e) {
        }
-	repaint();
-	//ImageIcon icon3 = new ImageIcon(test);
-	JLabel l1 = new JLabel(new ImageIcon(test));//"./img/clover.jpeg"));
-	JLabel l2 = new JLabel(new ImageIcon(m_img));//"./img/clover.jpeg"));
 	
-	JLabel l3 = new JLabel(new ImageIcon("./img/night.jpeg"));
-	JLabel l4 = new JLabel(new ImageIcon("./img/night.jpeg"));
-	//l2 = new JLabel(new ImageIcon(test));
-
+	JLabel l1 = new JLabel(new ImageIcon(test));//"./img/clover.jpeg"));
+	l2 = new JLabel(new ImageIcon(m_img));//"./img/clover.jpeg"));
 	
 	mainPane main_Pane = new mainPane();
 	buttonPane but_Pane = new buttonPane(this);
@@ -157,26 +152,16 @@ public class Visualiseur extends JFrame {
 	}
 	
 	class BoutonOuvrirAction implements ActionListener {
-		@Override
-//		public void actionPerformed(ActionEvent e) {
-//		// k cần getDource() (trả về objet của control)
-//		JFileChooser file = new JFileChooser();
-//		int returnVal = file.showOpenDialog(Visualiseur.this);
-//		if (returnVal == JFileChooser.APPROVE_OPTION){
-//			File f = file.getSelectedFile();
-//		}
-//		}
-		
+		@Override		
 		public void actionPerformed(ActionEvent e) {
 			url_src = getImageFile();
-			try { m_img = ImageIO.read(new File(url_src)); }
-			catch (Exception e1){};
-			//if (url_src != null)
-			//{
-				//Toolkit kit = Toolkit.getDefaultToolkit();
-			//}
-			repaint();
-			//revalidate();
+			System.out.println(url_src);
+			try {
+		       m_img = ImageIO.read(new File(url_src));
+		       } catch (IOException e1) {
+		       }
+			l2.setIcon (new ImageIcon(m_img));//"./img/clover.jpeg"));
+			
 		}
 		public String getImageFile() {
 			JFileChooser file = new JFileChooser();
