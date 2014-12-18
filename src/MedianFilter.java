@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 
@@ -83,18 +84,20 @@ public class MedianFilter {
 	                green = new int[a.length];
 	                blue = new int[a.length];
 	                //get the red,green,blue value from the pixel
-	                for (int i = 0; i < a.length; i++) {
-//	                    red[i] = Pixel.getRed( a[i] );
-//	                    green[i] = Pixel.getGreen( a[i] );
-//	                    blue[i] = Pixel.getBlue( a[i] );
+	                for (int i = 0; i < a.length; i++) {	                	
+	                	Color c = new Color(srcImage.getRGB(j,k));	                	
+	                    red[i] = c.getRed();
+	                    green[i] = c.getGreen();
+	                    blue[i] = c.getBlue();
+	                    //blue[i] = Pixel.getBlue( a[i] );
 	                }
 	                //find the median for each color
 	                int R = median(red);
 	                int G = median(green);
 	                int B = median(blue);
 	                //set the new pixel value using the median just found
-//	                int spixel = Pixel.createRGB(R, G, B);
-//	                dstImage.setRGB(j, k, spixel);
+	                int spixel = new Color(R, G, B).getRGB();	                
+	                dstImage.setRGB(j, k, spixel);
 	            }
 	        }
 	    }

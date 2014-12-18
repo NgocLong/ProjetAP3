@@ -13,27 +13,28 @@ import javax.swing.JToolBar;
 
 public class InitComponent {
 
+	JToolBar tb = new JToolBar();
+	JButton b1 = new JButton(new ImageIcon("img/Pointer_6127.png"));
+	JButton b2 = new JButton(new ImageIcon("img/ZoomToFit.png"));
+	JMenuBar mb = new JMenuBar();
+	JMenu fichier = new JMenu("Fichier");
+	JMenu edition = new JMenu("Edition");
+	JMenu outils = new JMenu("Outils");
+	JMenu aide = new JMenu("Aide");
+	JMenuItem ouvrir = new JMenuItem("Ouvrir");
+	JMenuItem sauvegarder = new JMenuItem("Sauvegarder");
+	JMenuItem quitter = new JMenuItem("Quitter");
+	JMenuItem copier = new JMenuItem("Copier");
+	JMenuItem coller = new JMenuItem("Coller");
+	JMenuItem test = new JMenuItem("Test");
+	JMenuItem choix1 = new JMenuItem("Choix 1");
+	JMenuItem choix2 = new JMenuItem("Choix 2");
+	JMenuItem apropos = new JMenuItem("A Propos");
+	
 	public InitComponent(Visualiseur visu)
 	{
-		JToolBar tb = new JToolBar();
-		JButton b1 = new JButton(new ImageIcon("img/Pointer_6127.png"));
-		JButton b2 = new JButton(new ImageIcon("img/ZoomToFit.png"));
 		tb.add(b1);
 		tb.add(b2);
-		JMenuBar mb = new JMenuBar();
-		JMenu fichier = new JMenu("Fichier");
-		JMenu edition = new JMenu("Edition");
-		JMenu outils = new JMenu("Outils");
-		JMenu aide = new JMenu("Aide");
-		JMenuItem ouvrir = new JMenuItem("Ouvrir");
-		JMenuItem sauvegarder = new JMenuItem("Sauvegarder");
-		JMenuItem quitter = new JMenuItem("Quitter");
-		JMenuItem copier = new JMenuItem("Copier");
-		JMenuItem coller = new JMenuItem("Coller");
-		JMenuItem test = new JMenuItem("Test");
-		JMenuItem choix1 = new JMenuItem("Choix 1");
-		JMenuItem choix2 = new JMenuItem("Choix 2");
-		JMenuItem apropos = new JMenuItem("A Propos");
 		fichier.setMnemonic('F');
 		fichier.add(ouvrir);
 		fichier.add(sauvegarder);
@@ -71,8 +72,16 @@ public class InitComponent {
 		visu.setJMenuBar(mb);
 		visu.setVisible(true);
 		visu.add(tb, BorderLayout.NORTH);
-		//ouvrir.addActionListener(new BoutonOuvrirAction());
-		//sauvegarder.addActionListener(new BoutonSauvegarderAction());
+	}
+	
+	public JMenuItem getOuvrir()
+	{
+		return ouvrir;
+	}
+	
+	public JMenuItem getSauvegarder()
+	{
+		return sauvegarder;
 	}
 	
 }
