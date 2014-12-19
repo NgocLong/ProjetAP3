@@ -33,5 +33,10 @@ public class buttonPane extends JPanel {
 
 	}
 	
+	public void addBut(JButton b)
+	{
+		b.setPreferredSize(new Dimension(100,100));
+		this.add(b);
+	}
 
 }

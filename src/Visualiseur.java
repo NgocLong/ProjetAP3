@@ -1,5 +1,6 @@
 import java.awt.Color;
 
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -32,13 +33,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
 
 public class Visualiseur extends JFrame {
-	
-	
+
 	static BufferedImage m_img_src = new BufferedImage( 256, 256 , BufferedImage.TYPE_INT_ARGB);
 	static BufferedImage m_img_dst = new BufferedImage( 256, 256 , BufferedImage.TYPE_INT_ARGB);
 	int cpt = 0;
@@ -82,25 +84,30 @@ public class Visualiseur extends JFrame {
 			liste_img_but[i] = new JButton(""+i);
 			liste_img_but[i].setPreferredSize(new Dimension(100,100));
 			url_liste_img_but[i] = "";
-			//liste_img_Pane.add(liste_img_but[i]);
 		}
 
 		main_Pane.setImage(l_src,l_dst);		
 		
 		slider_Pane.getSlider1().addChangeListener(new valuesChangeScale());
+
 		
 		main_Pane.add(liste_img_Pane);
 		
 		JButton b1 = new JButton("Negatif");
 		JButton b2 = new JButton("MedianFilter");
+		JButton b3 = new JButton("ColorDown");
+		JButton b4 = new JButton("ColorUp");
 		
 		b1.addActionListener(new buttonNegatifAction());		
 		b2.addActionListener(new buttonMedianFilterAction());
+		b3.addActionListener(new buttonColorDownAction());
+		b4.addActionListener(new buttonColorUpAction());
 		
-		but_Pane.add(b1);
-		but_Pane.add(b2);
+		but_Pane.addBut(b1);
+		but_Pane.addBut(b2);
+		but_Pane.addBut(b3);
+		but_Pane.addBut(b4);
 		
-		//this.getContentPane().add(new JPanelWithBackground("sample.jpeg"));
 		this.add(main_Pane, BorderLayout.CENTER);
 	}
 	
@@ -193,6 +200,35 @@ public class Visualiseur extends JFrame {
 		}
 	}
 	
+	class buttonColorDownAction implements ActionListener {
+		public void actionPerformed( ActionEvent e)
+		{	
+			colorUpDown value_color = new colorUpDown();
+			try {
+				value_color.setColorDown(m_img_dst,10);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			l_dst.setIcon(new ImageIcon(m_img_dst));
+			repaint();
+		}
+	}
+
+	class buttonColorUpAction implements ActionListener {
+		public void actionPerformed( ActionEvent e)
+		{	
+			colorUpDown value_color = new colorUpDown();
+			try {
+				value_color.setColorUp(m_img_dst,10);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			l_dst.setIcon(new ImageIcon(m_img_dst));
+			repaint();
+		}
+	}
 	class buttonChangeImgInListe implements ActionListener {
 		public void actionPerformed( ActionEvent e)
 		{			
@@ -214,25 +250,45 @@ public class Visualiseur extends JFrame {
 		}
 	}
 	
+	/*
+	class valuesChangeColor implements ChangeListener {		
+		public void stateChanged(ChangeEvent e) {
+			float source = (float)e.getSource();
+			
+			try {
+				value_color.setColorMaking(m_img_dst,(int)(source));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			l_dst.setIcon(new ImageIcon(m_img_dst));
+			slider_Pane.revalidate();
+			repaint();
+			
+		}
+		
+	}
+	*/
+	
 	class valuesChangeScale implements ChangeListener {
+		float scale_old_value = 1;
 		public void stateChanged(ChangeEvent e) {
 		    JSlider source = (JSlider)e.getSource();
-		    if (!source.getValueIsAdjusting()) {
-		        int scale = (int)source.getValue();
-		        if (scale == 0)
-		        	l_dst.setIcon(new ImageIcon(m_img_dst.getScaledInstance(width, height, Image.SCALE_FAST)));
-		        else if (scale > 0)
-		        	l_dst.setIcon(new ImageIcon(m_img_dst.getScaledInstance(width*scale, height*scale, Image.SCALE_FAST)));
-		        else
-		        	l_dst.setIcon(new ImageIcon(m_img_dst.getScaledInstance(-width/scale, height/scale, Image.SCALE_FAST)));
+		    if (!source.getValueIsAdjusting()) {		    			 
+		        float scale = (float)source.getValue()/10;
+		        int new_width = (int)(width*scale);
+		        int new_height = (int)(height*scale);		        
+		        l_dst.setIcon(new ImageIcon(m_img_dst.getScaledInstance((int)(width*scale), (int)(height*scale), Image.SCALE_FAST)));		       		       		        
+		        AffineTransform tx = new AffineTransform();
+		        tx.scale(scale/scale_old_value, scale/scale_old_value);
+		        AffineTransformOp op = new AffineTransformOp(tx,AffineTransformOp.TYPE_BILINEAR);
+		        m_img_dst = op.filter(m_img_dst, null);		        
+		        scale_old_value = scale;		        		    	
 		        repaint();
 		    }
 		}
 	}
-	
-	
-	
-	
+		
 	public static void main(String[] args) throws IOException 
 	{
 		Visualiseur visu = new Visualiseur();
