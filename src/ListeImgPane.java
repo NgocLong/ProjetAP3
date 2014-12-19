@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -8,14 +9,14 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 
 
-public class ListeImgPane extends JPanel {
+public class ListeImgPane extends JPanelWithBackground {
 	
 	JPanel l_img_Pane = new JPanel();
 	JScrollPane scroll_Pane = new JScrollPane(l_img_Pane);
 	
 	
-	public ListeImgPane(JPanel mainPane) {
-		super();
+	public ListeImgPane(JPanel mainPane) throws IOException {
+		super("./img/list.jpg");
 		
 		
 		this.setLayout(null);

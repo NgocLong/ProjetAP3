@@ -1,6 +1,5 @@
 import java.awt.Color;
 
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,13 +35,16 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.awt.image.RescaleOp;
 import java.io.File;
 
 public class Visualiseur extends JFrame {
 
-	static BufferedImage m_img_src = new BufferedImage( 256, 256 , BufferedImage.TYPE_INT_ARGB);
-	static BufferedImage m_img_dst = new BufferedImage( 256, 256 , BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage m_img_src = new BufferedImage( 500, 500 , BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage m_img_dst = new BufferedImage( 500, 500 , BufferedImage.TYPE_INT_ARGB);
 	int cpt = 0;
 	int width;
 	int height;
@@ -89,26 +91,50 @@ public class Visualiseur extends JFrame {
 		main_Pane.setImage(l_src,l_dst);		
 		
 		slider_Pane.getSlider1().addChangeListener(new valuesChangeScale());
-
+		slider_Pane.getSlider2().addChangeListener(new valuesChangeBlur());
 		
 		main_Pane.add(liste_img_Pane);
 		
 		JButton b1 = new JButton("Negatif");
-		JButton b2 = new JButton("MedianFilter");
-		JButton b3 = new JButton("ColorDown");
-		JButton b4 = new JButton("ColorUp");
+		JButton b2 = new JButton("Dark");
+		JButton b3 = new JButton("Light");
+		JButton b4 = new JButton("Rotation");
+		JButton b5 = new JButton("Reset");
+		//JButton b6 = new JButton("Blur");
 		
 		b1.addActionListener(new buttonNegatifAction());		
-		b2.addActionListener(new buttonMedianFilterAction());
-		b3.addActionListener(new buttonColorDownAction());
-		b4.addActionListener(new buttonColorUpAction());
+		b2.addActionListener(new buttonColorDownAction());
+		b3.addActionListener(new buttonColorUpAction());
+		b4.addActionListener(new buttonRotationAction());
+		b5.addActionListener(new buttonResetAction());
+		//b6.addActionListener(new BoutonBlurJobAction());
 		
 		but_Pane.addBut(b1);
 		but_Pane.addBut(b2);
 		but_Pane.addBut(b3);
 		but_Pane.addBut(b4);
+		but_Pane.addBut(b5);
+		//but_Pane.addBut(b6);
 		
 		this.add(main_Pane, BorderLayout.CENTER);
+	}
+	
+	public String getImageFile(boolean open_save) {
+		JFileChooser file = new JFileChooser();
+		FileFilter filter = new FileNameExtensionFilter("Images", "jpg", "png", "jpeg");
+		file.setFileFilter(filter);
+		int returnVal;
+		if(open_save)
+			returnVal = file.showOpenDialog(Visualiseur.this);
+		else
+			returnVal = file.showSaveDialog(Visualiseur.this);	
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File f = file.getSelectedFile();
+			return f.getPath();
+		}
+		else
+			return null;	
 	}
 	
 	class BoutonOuvrirAction implements ActionListener {
@@ -116,15 +142,13 @@ public class Visualiseur extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if(cpt < 10)
 			{
-				url_src = getImageFile();		
+				url_src = getImageFile(true);		
 				BufferedImage in_src;	
 				try 
 				{
 					in_src = ImageIO.read(new File(url_src));
 					width = in_src.getWidth();
 					height = in_src.getHeight();
-					m_img_src = new BufferedImage(in_src.getWidth(),in_src.getHeight(), BufferedImage.TYPE_INT_ARGB);
-					m_img_dst = new BufferedImage(in_src.getWidth(),in_src.getHeight(), BufferedImage.TYPE_INT_ARGB);
 					m_img_src = ImageIO.read(new File(url_src));
 					m_img_dst = ImageIO.read(new File(url_src));
 			    }
@@ -152,29 +176,19 @@ public class Visualiseur extends JFrame {
 				jop.showMessageDialog(null, mess, "Error : List Full", JOptionPane.INFORMATION_MESSAGE, img);
 			}
 		}
-		public String getImageFile() {
-			JFileChooser file = new JFileChooser();
-			FileFilter filter = new FileNameExtensionFilter("Images", "jpg", "png", "jpeg");
-			file.setFileFilter(filter);
-			int returnVal = file.showOpenDialog(Visualiseur.this);
-			if (returnVal == JFileChooser.APPROVE_OPTION)
-			{
-				File f = file.getSelectedFile();
-				return f.getPath();
-			}
-			else
-				return null;	
-		}
 	}
-		
+	
 	class BoutonSauvegarderAction implements ActionListener {
-		@Override
 		public void actionPerformed(ActionEvent e){
-			JFileChooser file = new JFileChooser();
-			int returnVal = file.showSaveDialog(Visualiseur.this);
-			if (returnVal == JFileChooser.APPROVE_OPTION){
-			}
-		}			
+			String url_save = getImageFile(false);
+			File outputfile = new File(url_save);
+			try {
+				ImageIO.write(m_img_dst,"png",outputfile);
+			} catch(IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
+		}
 	}
 	
 	class buttonNegatifAction implements ActionListener {
@@ -188,13 +202,17 @@ public class Visualiseur extends JFrame {
 		}
 	}
 	
-	class buttonMedianFilterAction implements ActionListener {
+	class buttonResetAction implements ActionListener {
 		public void actionPerformed( ActionEvent e)
 		{			
-			BufferedImage origine = m_img_dst;
-			MedianFilter mf = new MedianFilter(7);
-			mf.getFilterSize();
-			mf.filter(origine, m_img_dst);				
+			int width = m_img_src.getWidth();
+			int height = m_img_src.getHeight();
+			m_img_dst = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+			for (int i = 0; i < width; i++)
+			     for (int j = 0; j < height; j++)
+			     {
+			    	 m_img_dst.setRGB(i,j, m_img_src.getRGB(i, j));
+			     }
 			l_dst.setIcon(new ImageIcon(m_img_dst));
 			repaint();
 		}
@@ -229,6 +247,26 @@ public class Visualiseur extends JFrame {
 			repaint();
 		}
 	}
+
+	class buttonRotationAction implements ActionListener {
+		public void actionPerformed( ActionEvent e)
+		{	
+			int width = m_img_dst.getWidth();						
+			int height = m_img_dst.getHeight();
+			
+			Rotation rot = new Rotation();
+			rot.setrotation(m_img_dst);
+			m_img_dst = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
+			for (int i = 0; i < height; i++)
+			     for (int j = 0; j < width; j++)
+			     {
+			    	 m_img_dst.setRGB(i,j, rot.getImgRot().getRGB(i, j));
+			     }
+			l_dst.setIcon(new ImageIcon(m_img_dst));	
+			repaint();
+		}
+	}	
+	
 	class buttonChangeImgInListe implements ActionListener {
 		public void actionPerformed( ActionEvent e)
 		{			
@@ -249,27 +287,7 @@ public class Visualiseur extends JFrame {
 			repaint();
 		}
 	}
-	
-	/*
-	class valuesChangeColor implements ChangeListener {		
-		public void stateChanged(ChangeEvent e) {
-			float source = (float)e.getSource();
-			
-			try {
-				value_color.setColorMaking(m_img_dst,(int)(source));
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			l_dst.setIcon(new ImageIcon(m_img_dst));
-			slider_Pane.revalidate();
-			repaint();
-			
-		}
-		
-	}
-	*/
-	
+
 	class valuesChangeScale implements ChangeListener {
 		float scale_old_value = 1;
 		public void stateChanged(ChangeEvent e) {
@@ -288,7 +306,27 @@ public class Visualiseur extends JFrame {
 		    }
 		}
 	}
-		
+	
+	class valuesChangeBlur implements ChangeListener {
+		public void stateChanged(ChangeEvent e) {
+			JSlider source = (JSlider)e.getSource();
+		    if (!source.getValueIsAdjusting()) {		    			 
+		        float blur_value = (float)source.getValue();
+				if(blur_value != 0)
+				{
+					float[] matrix = new float[(int)(blur_value*blur_value)];
+					for (int i = 0; i < (int)(blur_value*blur_value); i++)
+						matrix[i] = 1.0f/blur_value;				
+				    BufferedImageOp op = new ConvolveOp( new Kernel((int)blur_value, (int)blur_value, matrix), ConvolveOp.EDGE_NO_OP, null );
+					m_img_dst = op.filter(m_img_src, m_img_dst);
+					l_dst.setIcon(new ImageIcon(m_img_dst));
+					slider_Pane.revalidate();
+					revalidate();
+					repaint();
+			    }
+			}
+		}
+	}	
 	public static void main(String[] args) throws IOException 
 	{
 		Visualiseur visu = new Visualiseur();

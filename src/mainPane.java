@@ -19,8 +19,8 @@ public class mainPane extends JPanelWithBackground {
 
 	private JLabel l_src = new JLabel();
 	private JLabel l_dest = new JLabel();
-	JPanel src_Pane = new JPanel();
-	JPanel dest_Pane = new JPanel();
+	JPanelWithBackground src_Pane = new JPanelWithBackground("./img/khunghinh.jpg");
+	JPanelWithBackground dest_Pane = new JPanelWithBackground("./img/khunghinh.jpg");
 	JPanel img_src_Pane = new JPanel();
 	JPanel img_dest_Pane = new JPanel();
 	JScrollPane src_scroll = new JScrollPane(img_src_Pane);
@@ -42,6 +42,7 @@ public class mainPane extends JPanelWithBackground {
 		dest_Pane.setBounds(640,80,360,600);
 		src_scroll.setBounds(30,100,300,400);
 		dest_scroll.setBounds(30,100,300,400);
+		
 		
 		//-----SetBorderColor-----
 		//(pour faciliter la vision)
