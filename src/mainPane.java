@@ -58,12 +58,12 @@ public class mainPane extends JPanelWithBackground {
 		src_Pane.setLayout(null);
 		dest_Pane.setLayout(null);
 		
-		// Fixer la position absolue du panneau
-		src_scroll.setBounds(30,150,390,500);
-		dest_scroll.setBounds(30,150,390,500);
-		src_Pane.setPreferredSize(new Dimension(450,800));
-		dest_Pane.setPreferredSize(new Dimension(450,800));
-		
+		// Fixer la position absolue du panneauutto 
+		src_scroll.setBounds(30,30,390,500);
+		dest_scroll.setBounds(30,30,390,500);
+		src_Pane.setPreferredSize(new Dimension(450,570));
+		dest_Pane.setPreferredSize(new Dimension(450,570));
+				
 		// Dessiner les bordures
 		this.setBorder(new LineBorder(Color.red));
 		src_Pane.setBorder(new LineBorder(Color.red));
@@ -71,14 +71,15 @@ public class mainPane extends JPanelWithBackground {
 		src_scroll.setBorder(new LineBorder(Color.green));
 		dest_scroll.setBorder(new LineBorder(Color.green));
 		img_src_Pane.setBorder(new LineBorder(Color.blue));
-		img_dest_Pane.setBorder(new LineBorder(Color.blue));
+		img_dest_Pane.setBorder(new LineBorder(Color.blue));		
+	
 		
 		src_Pane.add(src_scroll);
 		dest_Pane.add(dest_scroll);
 		
 		// Placer ces 2 panneaux dans le panneau principal
-		this.add(src_Pane,BorderLayout.CENTER);
-		this.add(dest_Pane,BorderLayout.CENTER);		
+		this.add(src_Pane,BorderLayout.NORTH);
+		this.add(dest_Pane,BorderLayout.NORTH);		
 	}
 
 	/**

@@ -14,7 +14,7 @@ public class buttonPane extends JPanel {
 	/**
 	 * Variable servant à positionner les boutons par rapport à la fenêtre
 	 */
-	int position = 125;
+	int position = 90;
 	
 	/**
 	 * Un panneau secondaire aidant à positionner le panneau principal 
@@ -34,7 +34,7 @@ public class buttonPane extends JPanel {
 		but.setLayout(null);	
 		this.setBorder(new LineBorder(Color.red));		
 		this.setPreferredSize(new Dimension(830,130));
-		but.setPreferredSize(new Dimension(900,130));
+		but.setPreferredSize(new Dimension(700,130));
 		but.setBorder(new LineBorder(Color.green));
 		sup.setPreferredSize(new Dimension(140,130));
 		
@@ -49,7 +49,7 @@ public class buttonPane extends JPanel {
 	public void addBut(JButton b)
 	{
 		b.setBounds(position,40,110,50);
-		position += 130;
+		position += 110;
 		but.add(b);
 	}
 }
