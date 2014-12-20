@@ -1,33 +1,30 @@
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.awt.image.*;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-/**Class thiết kế chức nay xoay hình, để đơn giản hóa projet chỉ thiết kế chức năng
- * xoay hình về bên trái 180 độ cho mỗi lần thực thi
- * @author doanngoclong
+/**
+ * Cette classe modélise la fonction Rotation.
+ * Pour être simple, cette fonction fait, à chaque fois, une rotation de 180 degres à gauche.
  */
-public class Rotation {
-
-	/**Biến hình xoay */
+public class Rotation 
+{
+	/**
+	 * Variable contenant l'image à faire tourner
+	 */
 	BufferedImage newImg1;
 	
-	/**Hàm dựng : rỗng */
+	/**
+	 * Constructeur par défaut vide de la classe Rotation
+	 */
 	Rotation(){
 	}
-
-	/**Hàm xây dựng chức năng xoay hình */
+	
 	public void setrotation(BufferedImage m_img_dst)
 	{
-		// lấy thông số rộng - dài hình ảnh gốc		
+		// Prendre les coordonnées de l'image source		
 		int width = m_img_dst.getWidth();						
 		int height = m_img_dst.getHeight();
-		// dựng ảnh mới với chiều rộng - dài trái ngược
+		// Faire tourner l'image
 		newImg1 = new BufferedImage(height, width, BufferedImage.TYPE_INT_ARGB);
-		// vẽ ảnh mới với các pixel xoay ngang từ hình cũ
+		// Dessiner une nouvelle image avec les nouveaux pixels
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 			{
@@ -36,7 +33,6 @@ public class Rotation {
 			}
 	}
 	
-	/**Hàm trả về biền hình xoay ngang*/
 	public BufferedImage getImgRot()
 	{
 		return newImg1;
