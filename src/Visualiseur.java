@@ -404,7 +404,8 @@ public class Visualiseur extends JFrame
 	}	
 
 	/**
-	 * 
+	 * Cette classe modélise la réaction lors du passage à une autre image dans la liste d'image à traiter.
+	 * C'est une classe interne à Visualiseur.
 	 */
 	class buttonChangeImgInListe implements ActionListener 
 	{
